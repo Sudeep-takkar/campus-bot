@@ -1,0 +1,4 @@
+.carousel-cards>.CarouselItem>div{
+    display: flex;
+    justify-content: center;
+}

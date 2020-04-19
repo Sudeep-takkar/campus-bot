@@ -1,0 +1,8 @@
+.youtube-video{
+        padding:20px;
+    
+}
+.youtube-video-container{
+    display: flex;
+    justify-content: center;
+}
