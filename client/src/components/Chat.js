@@ -4,8 +4,10 @@ import axios from "axios/index";
 import TextField from '@material-ui/core/TextField';
 import Cookies from 'universal-cookie';
 import { v4 as uuid } from 'uuid';
-
+import { Button } from '@material-ui/core';
 import _ from 'lodash';
+import Rating from '@material-ui/lab/Rating';
+import { TextareaAutosize } from '@material-ui/core';
 
 import Message from './Message';
 import Cards from './Cards.js';
@@ -25,7 +27,10 @@ class Chat extends React.Component {
 
         this.state = {
             messages: [],
-            isTyping: false
+            isTyping: false,
+            showRating: false,
+            showGoodbye: false,
+            rating: 1
         };
         if (cookies.get('userID') === undefined) {
             cookies.set('userID', uuid(), { path: '/' });
@@ -82,10 +87,8 @@ class Chat extends React.Component {
     };
 
     async df_event_query(eventName) {
-
         try {
             const res = await axios.post('/api/df_event_query', { event: eventName, userID: cookies.get('userID') });
-
             for (let msg of res.data.fulfillmentMessages) {
                 let says = {
                     speaks: 'bot',
@@ -102,7 +105,6 @@ class Chat extends React.Component {
                     }
                 }
             }
-
             this.setState({ messages: [...this.state.messages, says] });
         }
     };
@@ -119,11 +121,13 @@ class Chat extends React.Component {
         this.setState({ isTyping: true })
         await this.resolveAfterXSeconds(1);
         this.df_event_query('Welcome');
-        this.setState({ showBot: true, isTyping: false });
+        this.setState({ isTyping: false });
     }
 
     componentDidUpdate() {
-        this.messagesEnd.scrollIntoView({ behavior: "smooth" });
+        if (this.messagesEnd) {
+            this.messagesEnd.scrollIntoView({ behavior: "smooth" });
+        }
         if (this.talkInput) {
             this.talkInput.focus();
         }
@@ -202,6 +206,25 @@ class Chat extends React.Component {
         }
     }
 
+    _handleEndChat = () => {
+        this.setState({
+            showRating: true
+        })
+    }
+
+    _handleRatingChange = (event, newValue) => {
+        this.setState({
+            rating: newValue
+        })
+    }
+
+    _handleSubmitFeedback = () => {
+        this.setState({
+            showGoodbye: true,
+            showRating: false
+        })
+    }
+
     render() {
         const { isTyping, messages } = this.state
 
@@ -211,14 +234,10 @@ class Chat extends React.Component {
                 p={{ xs: 2, sm: 2, md: 2 }}
                 mx={{ xs: 2, sm: 2, md: 45 }}
                 my={{ xs: 2, sm: 2, md: 5 }}
-                style={{
-                    border: '1px solid',
-                    borderRadius: '6px',
-                    fontFamily: '"Segoe UI","Helvetica Neue","Helvetica","Lucida Grande",Arial,"Ubuntu","Cantarell","Fira Sans",sans-serif'
-                    , fontSize: '15px'
-                }}
+                minHeight={300}
+                className={this.state.showRating ? 'box-container-rating' : 'box-container'}
             >
-                <div style={{
+                {!this.state.showRating && !this.state.showGoodbye && <><div style={{
                     overflow: 'auto',
                     display: 'flex',
                     flexDirection: 'column',
@@ -240,21 +259,52 @@ class Chat extends React.Component {
                         <span className='typing-dot'></span>
                     </div>
                 </div>
-                <TextField
-                    id="user_says"
-                    style={{ margin: 8 }}
-                    placeholder="Type your message"
-                    fullWidth
-                    InputLabelProps={{
-                        shrink: true,
-                    }}
-                    margin="dense"
-                    variant="outlined"
-                    inputRef={(input) => { this.talkInput = input; }}
-                    onKeyPress={this._handleInputKeyPress}
-                    autoFocus={true}
-                    style={{ flex: 'none' }}
-                />
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                        <TextField
+                            id="user_says"
+                            placeholder="Type your message"
+                            InputLabelProps={{
+                                shrink: true,
+                            }}
+                            margin="dense"
+                            variant="outlined"
+                            inputRef={(input) => { this.talkInput = input; }}
+                            onKeyPress={this._handleInputKeyPress}
+                            autoFocus={true}
+                            style={{ flex: '3', margin: 8 }}
+                        />
+                        <Button variant="contained" onClick={this._handleEndChat} size="small">End Chat</Button>
+                    </div>
+                </>}
+                {this.state.showRating && !this.state.showGoodbye &&
+                    <div style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        width: '100%',
+                        minHeight: '300px',
+                        justifyContent: 'space-around',
+                        alignItems: 'center'
+                    }}>
+                        <h3>Tell us how was your experience?</h3>
+                        <Rating
+                            name="simple-controlled"
+                            value={this.state.rating}
+                            onChange={this._handleRatingChange}
+                            size="large"
+                        />
+                        <TextareaAutosize
+                            rowsMin={12}
+                            aria-label="maximum height"
+                            placeholder="Type your valuable feedback here."
+                        />
+                        <Button variant="contained" onClick={this._handleSubmitFeedback}>Submit</Button>
+                    </div>
+                }
+                {
+                    !this.state.showRating && this.state.showGoodbye && <div style={{ textAlign: 'center' }}>
+                        <h3>Thanks for your valuable feedback!</h3>
+                    </div>
+                }
             </Box>
         )
     }
