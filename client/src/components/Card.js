@@ -30,6 +30,7 @@ const CardItem = (props) => {
                 </CardContent>
                 <CardActions style={{ justifyContent: 'center' }}>
                     <Link
+                        target="_blank"
                         href={props.data.link ? props.data.link : '#'}
                         variant="body2">
                         Learn More

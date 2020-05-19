@@ -13,6 +13,8 @@ import Message from './Message';
 import Cards from './Cards.js';
 import QuickReplies from './QuickReplies';
 
+import { MessageHelper } from '../utils'
+
 import './Chat.css'
 const cookies = new Cookies();
 
@@ -32,9 +34,6 @@ class Chat extends React.Component {
             showGoodbye: false,
             rating: 1
         };
-        if (cookies.get('userID') === undefined) {
-            cookies.set('userID', uuid(), { path: '/' });
-        }
     }
 
     async df_text_query(queryText) {
@@ -48,7 +47,7 @@ class Chat extends React.Component {
         }
         this.setState({ messages: [...this.state.messages, says] });
         try {
-            const res = await axios.post('/api/df_text_query', { text: queryText, userID: cookies.get('userID') });
+            const res = await axios.post('/api/df_text_query', { text: queryText, userID: cookies.get('user_id') });
             if (!_.isEmpty(_.get(res, 'data.fulfillmentMessages'))) {
                 for (let msg of res.data.fulfillmentMessages) {
                     says = {
@@ -72,7 +71,10 @@ class Chat extends React.Component {
             }
             this.setState({ isTyping: true })
             await this.resolveAfterXSeconds(1);
-            this.setState({ messages: [...this.state.messages, says], isTyping: false });
+            this.setState({ messages: [...this.state.messages, says], isTyping: false }, () => {
+                let { messages } = this.state
+                MessageHelper(messages)
+            });
         } catch (e) {
             says = {
                 speaks: 'bot',
@@ -88,7 +90,7 @@ class Chat extends React.Component {
 
     async df_event_query(eventName) {
         try {
-            const res = await axios.post('/api/df_event_query', { event: eventName, userID: cookies.get('userID') });
+            const res = await axios.post('/api/df_event_query', { event: eventName, userID: cookies.get('user_id') });
             for (let msg of res.data.fulfillmentMessages) {
                 let says = {
                     speaks: 'bot',
@@ -121,6 +123,12 @@ class Chat extends React.Component {
         this.setState({ isTyping: true })
         await this.resolveAfterXSeconds(1);
         this.df_event_query('Welcome');
+
+        if (cookies.get('user_id') === undefined) {
+            cookies.set('user_id', uuid(), { path: '/' });
+        }
+        cookies.set('conversation_id', uuid(), { path: '/' });
+
         this.setState({ isTyping: false });
     }
 

@@ -1,6 +1,7 @@
 const chatbot = require('../chatbot/chatbot')
 const _ = require('lodash')
 const googleIt = require('google-it')
+let Conversation = require('../chatbot/models/conversation.model')
 
 module.exports = app => {
 
@@ -32,5 +33,44 @@ module.exports = app => {
             throw e
         }
         res.send(responses[0].queryResult)
+    })
+
+    app.post('/api/add/conversation', (req, res) => {
+        try {
+            const conversation = req.body.conversation
+            const newConversation = new Conversation({ conversation, conversation_id: req.body.conversation_id, user_id: req.body.user_id })
+            newConversation.save()
+                .then((result) => res.json(result))
+                .catch(err => res.status(400).json('Error:' + err))
+        }
+        catch (e) {
+            throw e
+        }
+    })
+
+    app.get('/api/getConversation', async (req, res) => {
+        try {
+            await Conversation.findOne({ conversation_id: req.query.conversation_id },
+                (err, result) => {
+                    if (err) throw err
+                    res.send(result)
+                })
+        }
+        catch (e) {
+            throw e
+        }
+    })
+
+    app.post('/api/updateConversation', async (req, res) => {
+        try {
+            await Conversation.findOneAndUpdate({ conversation_id: req.body.conversation_id }, { $set: { conversation: req.body.conversation } }, { new: true },
+                (err, result) => {
+                    if (err) throw err
+                    res.send(result)
+                })
+        }
+        catch (e) {
+            throw e
+        }
     })
 }

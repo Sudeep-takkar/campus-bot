@@ -12,21 +12,13 @@ const useStyles = makeStyles((theme) => ({
     },
     appBar: {
         backgroundColor: '#408bd6'
-    },
-    container: {
-        position: 'absolute',
-        left: 0,
-        right: 0,
-        top: 0,
-        bottom: 0,
-        backgroundColor: '#e8e8e8'
     }
 }));
 
 const App = () => {
     const classes = useStyles();
     return (
-        <div className={classes.container}>
+        <div>
             <AppBar position="relative" className={classes.appBar}>
                 <Toolbar>
                     <Typography variant="h6" className={classes.title}>
