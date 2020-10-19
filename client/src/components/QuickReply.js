@@ -6,8 +6,9 @@ const QuickReply = (props) => {
         return (
             <Link
                 style={{
-                    margin: 3, fontSize: '12px', backgroundColor: '#ff9ea1',
-                    borderRadius: '24px', padding: '7.5px'
+                    margin: 3, fontSize: '12px', backgroundColor: 'rgb(107 149 190)',
+                    borderRadius: '24px', padding: '7.5px', color: 'white', textDecoration: 'none',
+                    fontWeight: '500'
                 }}
                 href="/"
                 onClick={(event) =>

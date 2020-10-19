@@ -36,11 +36,12 @@ class QuickReplies extends Component {
                 <div>
                     <div style={{
                         borderRadius: '10px',
-                        backgroundColor: '#408bd6',
+                        backgroundColor: '#d2d2d2',
                         padding: '10px',
                         position: 'relative',
-                        color: 'aliceblue',
+                        color: 'black',
                         marginBottom: '5px',
+                        marginLeft: '12px',
                         maxWidth: '525px'
                     }}>
                         {

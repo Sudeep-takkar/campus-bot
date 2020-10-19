@@ -31,10 +31,11 @@ class Message extends React.Component {
 
                         <div style={{
                             borderRadius: '10px',
-                            backgroundColor: '#408bd6',
+                            backgroundColor: '#d2d2d2',
                             padding: '10px',
                             position: 'relative',
-                            color: 'aliceblue',
+                            color: 'black',
+                            marginLeft: '12px',
                             maxWidth: '525px'
                         }}>
                             <div style={{ marginBottom: '10px', lineHeight: '19px' }}>
@@ -48,10 +49,10 @@ class Message extends React.Component {
                     <div style={{ display: 'flex', justifyContent: 'flex-end', margin: '10px' }}>
                         <div style={{
                             borderRadius: '10px',
-                            backgroundColor: '#ee6e73',
+                            backgroundColor: '#224b75',
                             padding: '10px',
                             position: 'relative',
-                            marginRight: '5px',
+                            marginRight: '12px',
                             color: 'aliceblue',
                             maxWidth: '525px'
                         }}>

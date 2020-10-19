@@ -7,8 +7,8 @@ import Chat from './Chat';
 
 const useStyles = makeStyles((theme) => ({
     title: {
-        flexGrow: 1,
-        textAlign: 'center'
+        textAlign: 'center',
+        marginRight: '10px'
     },
     appBar: {
         backgroundColor: '#408bd6'
@@ -20,10 +20,11 @@ const App = () => {
     return (
         <div>
             <AppBar position="relative" className={classes.appBar}>
-                <Toolbar>
+                <Toolbar style={{ justifyContent: 'center' }}>
                     <Typography variant="h6" className={classes.title}>
-                        Campus Bot
+                        CampusBot
                     </Typography>
+                    <Typography variant="body1" className={classes.title}>|   effective international student engagement</Typography>
                 </Toolbar>
             </AppBar>
             <Chat />

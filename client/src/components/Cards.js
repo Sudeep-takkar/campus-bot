@@ -24,10 +24,11 @@ class Cards extends Component {
                     <img src="https://img.icons8.com/wired/2x/bot.png" alt="Smiley face" height="42" width="42"></img>
                     <div style={{
                         borderRadius: '10px',
-                        backgroundColor: '#408bd6',
+                        backgroundColor: '#d2d2d2',
                         padding: '10px',
                         position: 'relative',
-                        color: 'aliceblue',
+                        color: 'black',
+                        marginLeft: '12px',
                         maxWidth: '525px'
                     }}>
                         {this.props.text && <div style={{ marginBottom: '10px', lineHeight: '19px' }}>
