@@ -267,7 +267,7 @@ class Chat extends React.Component {
             >
                 {!this.state.showRating && !this.state.showGoodbye && <>
                     <AppBar position="static" color="transparent" style={{ boxShadow: 'none', borderBottom: '1px solid ' }}>
-                        <Toolbar style={{ display: 'flex', justifyContent: 'space-between' }}>
+                        <Toolbar style={{ display: 'flex', justifyContent: 'space-between', padding: '0' }}>
                             <img src={campusBotLogo} style={{ width: '255px', height: '65px' }} alt="CampusBot" />
                             <IconButton edge="start" color="inherit" aria-label="menu" onClick={this._handleEndChat}>
                                 <ClearRounded style={{ color: '#224b75' }} />
@@ -277,8 +277,8 @@ class Chat extends React.Component {
                         overflow: 'auto',
                         display: 'flex',
                         flexDirection: 'column',
-                        minHeight: '550px',
-                        maxHeight: '550px',
+                        minHeight: '525px',
+                        maxHeight: '525px',
                         padding: '0 16px 16px 16px'
                     }}>
                         <div>
@@ -298,7 +298,7 @@ class Chat extends React.Component {
                             </div>
                         </div>
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', borderTop: '1px solid' }}>
                         <TextField
                             id="user_says"
                             placeholder="Type your message"
