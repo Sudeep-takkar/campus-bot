@@ -8,10 +8,17 @@ import { Button } from '@material-ui/core';
 import _ from 'lodash';
 import Rating from '@material-ui/lab/Rating';
 import { TextareaAutosize } from '@material-ui/core';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import IconButton from '@material-ui/core/IconButton';
+import ClearRounded from '@material-ui/icons/ClearRounded';
+import SendRounded from '@material-ui/icons/SendRounded'
 
 import Message from './Message';
 import Cards from './Cards.js';
 import QuickReplies from './QuickReplies';
+
+import campusBotLogo from '../campusbot_transparent_logo.png';
 
 import { MessageHelper } from '../utils'
 
@@ -26,6 +33,7 @@ class Chat extends React.Component {
         super(props);
         this._handleInputKeyPress = this._handleInputKeyPress.bind(this);
         this._handleQuickReplyPayload = this._handleQuickReplyPayload.bind(this);
+        this._sendMessage = this._sendMessage.bind(this);
 
         this.state = {
             messages: [],
@@ -34,6 +42,8 @@ class Chat extends React.Component {
             showGoodbye: false,
             rating: 1
         };
+
+        //this.talkInput = React.createRef();
     }
 
     async df_text_query(queryText) {
@@ -207,10 +217,20 @@ class Chat extends React.Component {
         }
     }
 
+    _sendMessage(event) {
+        if (_.get(event, 'target.value')) {
+            this.df_text_query(event.target.value);
+            event.target.value = '';
+        }
+        else if (_.get(this.talkInput, 'value')) {
+            this.df_text_query(this.talkInput.value);
+            this.talkInput.value = '';
+        }
+    }
+
     _handleInputKeyPress(e) {
         if (e.key === 'Enter') {
-            this.df_text_query(e.target.value);
-            e.target.value = '';
+            this._sendMessage(e)
         }
     }
 
@@ -245,28 +265,39 @@ class Chat extends React.Component {
                 minHeight={300}
                 className={this.state.showRating ? 'box-container-rating' : 'box-container'}
             >
-                {!this.state.showRating && !this.state.showGoodbye && <><div style={{
-                    overflow: 'auto',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    minHeight: '550px',
-                    maxHeight: '550px'
-                }}>
-                    <div style={{ flexGrow: '1' }}>
-                        {this.renderMessages(messages)}
-                        <div ref={(el) => { this.messagesEnd = el; }}
-                            style={{ float: "left", clear: "both" }}>
+                {!this.state.showRating && !this.state.showGoodbye && <>
+                    <AppBar position="static" color="transparent" style={{ boxShadow: 'none', borderBottom: '1px solid ' }}>
+                        <Toolbar style={{ display: 'flex', justifyContent: 'space-between' }}>
+                            <img src={campusBotLogo} style={{ width: '255px', height: '65px' }} alt="CampusBot" />
+                            <IconButton edge="start" color="inherit" aria-label="menu" onClick={this._handleEndChat}>
+                                <ClearRounded style={{ color: '#224b75' }} />
+                            </IconButton>
+                        </Toolbar>
+                    </AppBar><div style={{
+                        overflow: 'auto',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        minHeight: '550px',
+                        maxHeight: '550px',
+                        padding: '0 16px 16px 16px'
+                    }}>
+                        <div>
+                            <div style={{ flexGrow: '1' }}>
+                                {this.renderMessages(messages)}
+                                <div ref={(el) => { this.messagesEnd = el; }}
+                                    style={{ float: "left", clear: "both" }}>
+                                </div>
+                            </div>
+                            <div
+                                style={{
+                                    justifyContent: 'center', display: isTyping ? 'flex' : 'none', padding: '10px'
+                                }}>
+                                <span className='typing-dot'></span>
+                                <span className='typing-dot'></span>
+                                <span className='typing-dot'></span>
+                            </div>
                         </div>
                     </div>
-                    <div
-                        style={{
-                            justifyContent: 'center', display: isTyping ? 'flex' : 'none', padding: '10px'
-                        }}>
-                        <span className='typing-dot'></span>
-                        <span className='typing-dot'></span>
-                        <span className='typing-dot'></span>
-                    </div>
-                </div>
                     <div style={{ display: 'flex', alignItems: 'center' }}>
                         <TextField
                             id="user_says"
@@ -281,7 +312,11 @@ class Chat extends React.Component {
                             autoFocus={true}
                             style={{ flex: '3', margin: 8 }}
                         />
-                        <Button variant="contained" onClick={this._handleEndChat} size="small">End Chat</Button>
+
+                        <IconButton edge="start" color="inherit" aria-label="menu" onClick={this._sendMessage}>
+                            <SendRounded style={{ color: '#224b75' }} />
+                        </IconButton>
+                        {/* <Button variant="contained" onClick={this._sendMessage} size="small">Send</Button> */}
                     </div>
                 </>}
                 {this.state.showRating && !this.state.showGoodbye &&
