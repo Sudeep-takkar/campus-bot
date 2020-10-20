@@ -9,12 +9,13 @@ module.exports = app => {
         let responses = null
         try {
             responses = await chatbot.textQuery(req.body.text, req.body.userID, req.body.parameters)
-            if (_.get(responses, '[0].queryResult.intent.displayName') === 'Default Fallback Intent') {
+            if (_.get(responses, '[0].queryResult.intent.displayName') == 'Default Fallback Intent') {
                 googleIt({ 'query': responses[0].queryResult.queryText })
                     .then(results => {
                         res.send(results)
                     }).catch(e => {
                         // any possible errors that might have occurred (like no Internet connection)
+                        console.log(e)
                     })
             }
             else {
