@@ -5,6 +5,7 @@ import TextField from '@material-ui/core/TextField';
 import Cookies from 'universal-cookie';
 import { v4 as uuid } from 'uuid';
 import { Button } from '@material-ui/core';
+import { Autocomplete } from '@material-ui/lab';
 import _ from 'lodash';
 import Rating from '@material-ui/lab/Rating';
 import { TextareaAutosize } from '@material-ui/core';
@@ -25,6 +26,15 @@ import { MessageHelper } from '../utils'
 import './Chat.css'
 const cookies = new Cookies();
 
+const frequentlyAskedQuestions = [
+    { title: 'Zoom application tutorials' },
+    { title: 'Covid-19 WHO' },
+    { title: 'air travel restrictions Canada' },
+    { title: 'IELTS Exam' },
+    { title: 'Post Grad Work Permit' },
+    { title: 'Food Services in Waterloo' }
+];
+
 class Chat extends React.Component {
     messagesEnd;
     talkInput;
@@ -40,7 +50,8 @@ class Chat extends React.Component {
             isTyping: false,
             showRating: false,
             showGoodbye: false,
-            rating: 1
+            rating: 1,
+            autoCompleteValue: ''
         };
 
         //this.talkInput = React.createRef();
@@ -218,6 +229,10 @@ class Chat extends React.Component {
     }
 
     _sendMessage(event) {
+        let x = _.get(event, 'target.value')
+        let y = _.get(this.talkInput, 'value')
+        console.log(x, y, this.state)
+        debugger
         if (_.get(event, 'target.value')) {
             this.df_text_query(event.target.value);
             event.target.value = '';
@@ -299,23 +314,33 @@ class Chat extends React.Component {
                         </div>
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', borderTop: '1px solid' }}>
-                        <TextField
-                            id="user_says"
-                            placeholder="Type your message"
-                            InputLabelProps={{
-                                shrink: true,
-                            }}
-                            margin="dense"
-                            variant="outlined"
-                            inputRef={(input) => { this.talkInput = input; }}
-                            onKeyPress={this._handleInputKeyPress}
-                            autoFocus={true}
-                            style={{ flex: '3', margin: 8 }}
+                        <Autocomplete
+                            id="combo-box-demo"
+                            options={frequentlyAskedQuestions}
+                            freeSolo
+                            getOptionLabel={(option) => option.title ? option.title : ""}
+                            style={{ width: '100%' }}
+                            onInputChange={this._handleInputKeyPress}
+                            value={this.state.autoCompleteValue}
+                            renderInput={(params) => <div style={{ display: 'flex' }}>
+                                <TextField
+                                    {...params}
+                                    id="user_says"
+                                    placeholder="Type your message"
+                                    InputLabelProps={{
+                                        shrink: true,
+                                    }}
+                                    margin="dense"
+                                    variant="outlined"
+                                    inputRef={(input) => { this.talkInput = input; }}
+                                    onKeyPress={this._handleInputKeyPress}
+                                    autoFocus={true}
+                                    style={{ flex: '3', margin: 8 }}
+                                /><IconButton edge="start" color="inherit" aria-label="menu" onClick={this._sendMessage}>
+                                    <SendRounded style={{ color: '#224b75' }} />
+                                </IconButton>
+                            </div>}
                         />
-
-                        <IconButton edge="start" color="inherit" aria-label="menu" onClick={this._sendMessage}>
-                            <SendRounded style={{ color: '#224b75' }} />
-                        </IconButton>
                         {/* <Button variant="contained" onClick={this._sendMessage} size="small">Send</Button> */}
                     </div>
                 </>}
